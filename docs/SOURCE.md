@@ -8,14 +8,15 @@ with the patches in [`../patches`](../patches) applied.
 
 | Part | Value |
 | --- | --- |
-| App package | `com.fcl.plugin.mobileglues` |
-| App versionName | `2.9.9-CustomKona` (Kona 2.9.9) |
-| App versionCode | 2990 |
+| App package | `com.arraffi.kona.mobileglues` |
+| App versionName | `2.9.9-KonaGlues` (Kona 2.9.9) |
+| App versionCode | 2991 |
+| Renderer name | `KonaGlues` |
 | MobileGlues core | `2.0.1·Dev1` |
 | MobileGlues base | `MobileGL-Dev/MobileGlues` commit `0c27a3a` |
 | SimpleFPEWrapper | `26.11-dev`, commit `3042d8a` |
 | Native library | `libmobileglues-2.0.1-0c27a3a-kona.so`, sha256 `f8358ac9d969...` |
-| APK | `MobileGlues-Kona-2.9.9.apk`, sha256 `b0ed18f3c28c...` |
+| APK | `MobileGlues-KonaGlues-2.9.9.apk`, sha256 `74e28c2131cd...` |
 
 ## What is in the native library
 
@@ -43,12 +44,18 @@ MobileGlues core change.
 The APK is a repack of the official MobileGlues plugin APK (`2.9.9` line), with:
 
 - the native `libmobileglues.so` replaced by the Kona build above;
-- the display strings and version name changed to `2.9.9-CustomKona` / Kona;
+- the manifest package changed to `com.arraffi.kona.mobileglues`;
+- the custom permission and the `androidx-startup` provider authority renamed to
+  the new package, so they do not collide with the original install;
+- the app label changed to `KonaGlues`, and the renderer metadata changed to
+  `KonaGlues:libmobileglues.so:libmobileglues.so`;
+- the version name/code set to `2.9.9-KonaGlues` / 2991;
 - the APK signed with the Kona key.
 
-It is therefore a **different signer** from the official `CN=MGDev` APK. Android will
-not install it over the official package; uninstall the official plugin first and
-keep a backup.
+It is therefore a **different signer** from the official `CN=MGDev` APK, but because
+the package is different it can be installed alongside the official
+`com.fcl.plugin.mobileglues` app. Do not install it over the official package; keep a
+backup of your working renderer and launcher config.
 
 The native library is reproducible with [`../scripts/build-kona.sh`](../scripts/build-kona.sh).
 The smali/string repack steps are instance-specific and not scripted here; the

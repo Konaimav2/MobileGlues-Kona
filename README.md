@@ -6,14 +6,16 @@
 > **This is an unofficial fork.**
 >
 > It is not affiliated with, endorsed by, or supported by MobileGL-Dev. Do not report
-> bugs from this build to the upstream project. The APK is repacked and signed with a
-> different key than the official `CN=MGDev` release, so it will not update over or
-> verify against an official MobileGlues install.
+> bugs from this build to the upstream project. The APK is repacked, uses the separate
+> package `com.arraffi.kona.mobileglues`, and is signed with a different key than the
+> official `CN=MGDev` release. It can be installed alongside the official
+> `com.fcl.plugin.mobileglues` app, but it will not update over it.
 >
 > Tested on a Mali-G57 MC2 device only, with OpenGL ES 3.2 and Minecraft 26.3 /
 > 26.4 snapshots. Use it at your own risk and keep a backup of your working renderer.
 
-**Kona version:** `2.9.9-Kona` (package versionName `2.9.9-CustomKona`, versionCode 2990)  
+**Kona version:** `2.9.9-KonaGlues` (package `com.arraffi.kona.mobileglues`, versionName `2.9.9-KonaGlues`, versionCode 2991)  
+**Renderer name:** `KonaGlues`  
 **Core:** MobileGlues `2.0.1·Dev1`  
 **Base commit:** [MobileGL-Dev/MobileGlues `0c27a3a`](https://github.com/MobileGL-Dev/MobileGlues/tree/0c27a3a)  
 **Wrapper:** SimpleFPEWrapper `26.11-dev`, commit `3042d8a` (supplied by the launcher)  
@@ -27,8 +29,9 @@ This repository packages a Kona build of MobileGlues for one specific job: runni
 Minecraft 26.3 and 26.4 snapshots on a Mali-G57 MC2 device through ZalithLauncher 2,
 with the launcher's SimpleFPEWrapper doing the fixed-function translation. The
 native library is built from the upstream `dev` branch at `0c27a3a` plus three small
-patches. The APK is a repack of the official plugin APK with the custom library and
-Kona version strings.
+patches. The APK is a repack of the official plugin APK with the custom library, the
+separate Kona package, and the `KonaGlues` renderer name. That keeps it from
+conflicting with the original `MobileGlues` install.
 
 # Features
 
@@ -65,11 +68,11 @@ performance patches. The performance work lives upstream (see
 # Install
 
 1. Back up your current renderer and your launcher version config.
-2. If the official `com.fcl.plugin.mobileglues` is installed, uninstall it first. The
-   Kona APK uses a different signing key, so Android will reject an in-place update.
-3. Install `MobileGlues-Kona-2.9.9.apk` from the
+2. Keep the official `com.fcl.plugin.mobileglues` installed if you want it. The Kona
+   APK uses `com.arraffi.kona.mobileglues`, so both apps can coexist.
+3. Install `MobileGlues-KonaGlues-2.9.9.apk` from the
    [latest release](https://github.com/Konaimav2/MobileGlues-Kona/releases/latest).
-4. In ZalithLauncher 2, select the MobileGlues renderer for the instance and enable
+4. In ZalithLauncher 2, select the `KonaGlues` renderer for the instance and enable
    the SimpleFPEWrapper plugin layer.
 
 A tested 26.4 configuration:
@@ -77,16 +80,17 @@ A tested 26.4 configuration:
 ```json
 {
   "graphicsApi": "OPENGL",
-  "renderer": "com.fcl.plugin.mobileglues",
+  "renderer": "com.arraffi.kona.mobileglues",
   "sfpewPluginLayer": "ENABLE",
   "javaRuntime": "Internal-25",
   "driver": "com.mio.plugin.renderer.turnip2600d.r27d.sdk29"
 }
 ```
 
-For 26.3 the same renderer and `sfpewPluginLayer` values work. If you patch the game
-jar, set `skipGameIntegrityCheck` to `SKIP` for that instance; leave it alone for a
-clean jar. Vulkan is not supported on this Mali device; use OpenGL.
+For 26.3 the same renderer and `sfpewPluginLayer` values work. The renderer list will
+show both `MobileGlues` (official/original) and `KonaGlues` (this build). If you patch
+the game jar, set `skipGameIntegrityCheck` to `SKIP` for that instance; leave it alone
+for a clean jar. Vulkan is not supported on this Mali device; use OpenGL.
 
 # Tested setup
 
@@ -97,12 +101,15 @@ clean jar. Vulkan is not supported on this Mali device; use OpenGL.
 | Launcher | ZalithLauncher 2 |
 | Minecraft | 26.3 and 26.4-snapshot-8 |
 | Loader | Fabric 0.20.1 |
+| Renderer | `KonaGlues` (`com.arraffi.kona.mobileglues`) |
 | Wrapper | SimpleFPEWrapper 26.11-dev, `3042d8a` |
 | Shaders | Iris 1.11.7, E-LITE 5.1.3, Miniature 2.19 |
 
 The 26.3 run reports `MobileGlues 2.0.1·Dev1`; the 26.4 run reports the same core
-with the launcher wrapper. The 26.4 instance needs the plugin renderer and
-`sfpewPluginLayer=ENABLE`; the built-in renderer is a separate fallback.
+with the launcher wrapper. The 26.4 instance needs the `KonaGlues` renderer and
+`sfpewPluginLayer=ENABLE`; the built-in renderer is a separate fallback. Both the
+original and Kona packages can stay installed; they share the global `/sdcard/MG`
+configuration directory.
 
 # Build from source
 
@@ -160,10 +167,11 @@ The output is `dist/libmobileglues-2.0.1-0c27a3a-kona.so`. See
 
 # Signature and verification
 
-The official MobileGlues APK is signed by `CN=MGDev`. This fork is **not**. Do not
-expect `apksigner verify --print-certs` to match the upstream fingerprint. Verify the
-file hash against the `SHA256SUMS` asset in the release, and treat any APK from
-another source as untrusted.
+The official MobileGlues APK is signed by `CN=MGDev` and uses the package
+`com.fcl.plugin.mobileglues`. This fork is **not** signed by MGDev and uses
+`com.arraffi.kona.mobileglues`, so do not expect `apksigner verify --print-certs` to
+match the upstream fingerprint. Verify the file hash against the `SHA256SUMS` asset
+in the release, and treat any APK from another source as untrusted.
 
 # Upstream and license
 
