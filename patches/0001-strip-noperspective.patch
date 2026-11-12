@@ -1,0 +1,25 @@
+diff --git a/MobileGlues-cpp/gl/glsl/glsl_for_es.cpp b/MobileGlues-cpp/gl/glsl/glsl_for_es.cpp
+index c7eee88..f0dcb3a 100644
+--- a/MobileGlues-cpp/gl/glsl/glsl_for_es.cpp
++++ b/MobileGlues-cpp/gl/glsl/glsl_for_es.cpp
+@@ -639,6 +639,20 @@ std::string preprocess_glsl(const std::string& glsl, GLenum shaderType) {
+     std::string ret = glsl;
+     // Remove lines beginning with `#line`
+     ret = replace_line_starting_with(ret, "#line");
++
++    // Desktop-only interpolation qualifier.
++    // Iris enables GL_NV_shader_noperspective_interpolation for its shadow
++    // programs ("shadow_tex", "shadow_particles", ...). The ES profile rejects
++    // both the directive and the qualifier -- Mali reports it as
++    // "P0003: Extension 'GL_NV_shader_noperspective_interpolation' not supported"
++    // -- and a shadow program that fails to build leaves the pack's composite
++    // sampling an uninitialised (white) target. Dropping the qualifier changes
++    // interpolation smoothness only; the shadow lookup itself stays correct.
++    ret = std::regex_replace(
++        ret, std::regex(R"([ \t]*#extension[ \t]+GL_NV_shader_noperspective_interpolation[^\r\n]*(\r?\n)?)"),
++        "");
++    replace_all(ret, "noperspective ", "");
++    replace_all(ret, "noperspective\t", "");
+     // Act as if disable_GL_ARB_derivative_control is false
+     replace_all(ret, "#ifdef GL_ARB_derivative_control", "#if 0");
+     replace_all(ret, "#ifndef GL_ARB_derivative_control", "#if 1");

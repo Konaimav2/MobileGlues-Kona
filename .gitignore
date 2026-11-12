@@ -1,0 +1,6 @@
+dist/
+*.apk
+*.so
+*.zip
+*.tmp
+tmp/

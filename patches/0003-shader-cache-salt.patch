@@ -1,0 +1,13 @@
+diff --git a/MobileGlues-cpp/gl/glsl/glsl_for_es.cpp b/MobileGlues-cpp/gl/glsl/glsl_for_es.cpp
+index 0dba081..acc593a 100644
+--- a/MobileGlues-cpp/gl/glsl/glsl_for_es.cpp
++++ b/MobileGlues-cpp/gl/glsl/glsl_for_es.cpp
+@@ -253,7 +253,7 @@ std::string GLSLtoGLSLES(const char* glsl_code, GLenum glsl_type, uint essl_vers
+     // which were stored already stripped, from being taken for that.
+     std::string sha256_string(glsl_code);
+     sha256_string += "\n//" + std::to_string(MAJOR) + "." + std::to_string(MINOR) + "." + std::to_string(REVISION) +
+-                     "|" + std::to_string(essl_version) + "|udef";
++                     "|" + std::to_string(essl_version) + "|udef|custom-1";
+     const char* cachedESSL = Cache::get_instance().get(sha256_string.c_str());
+     if (cachedESSL) {
+         LOG_D("GLSL Hit Cache:\n%s\n-->\n%s", glsl_code, cachedESSL)
